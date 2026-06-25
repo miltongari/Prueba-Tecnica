@@ -1,6 +1,5 @@
 package com.mx.PruebaTecnica.Controller;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +14,16 @@ import com.mx.PruebaTecnica.Entity.ResumenMontoResponse;
 import com.mx.PruebaTecnica.Service.ProcesamientoService;
 
 @RestController
-@RequestMapping("/api/pagos")
+@RequestMapping("/api/v1/transacciones")
 public class PagoController {
 
-    @Autowired
-    private ProcesamientoService procesamientoService; 
+	@Autowired
+	private ProcesamientoService procesamientoService;
 
-    // http://localhost:9001/api/pagos/calcularTotal
-    @PostMapping(value = "/calcularTotal")
-    public ResponseEntity<ResumenMontoResponse> procesarElementos(@RequestBody List<ElementRequest> request) {
-        ResumenMontoResponse respuesta = procesamientoService.calcularTotalExitoso(request);
-        return ResponseEntity.ok(respuesta);
-    }
+	// http://localhost:9001/api/v1/transacciones/resumen
+	@PostMapping(value = "/resumen")
+	public ResponseEntity<List<ResumenMontoResponse>> procesarElementos(@RequestBody List<ElementRequest> request) {
+		List<ResumenMontoResponse> respuesta = procesamientoService.calcularTotalExitoso(request);
+		return ResponseEntity.ok(respuesta);
+	}
 }

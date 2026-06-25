@@ -1,6 +1,9 @@
 package com.mx.PruebaTecnica.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -10,18 +13,24 @@ import com.mx.PruebaTecnica.Entity.ResumenMontoResponse;
 @Service
 public class ProcesamientoService {
 
-	public ResumenMontoResponse calcularTotalExitoso(List<ElementRequest> elementos) {
-		if (elementos == null || elementos.isEmpty()) {
-			return new ResumenMontoResponse("Sin datos", 0.0);
-		}
+	public List<ResumenMontoResponse> calcularTotalExitoso(List<ElementRequest> elementos) {
+        if (elementos == null || elementos.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-		// nombre del primer registro
-		String nombrePersona = elementos.get(0).getNombre();
+      // Filtro para status exitoso
+        Map<String, Double> agrupadoPorNombre = elementos.stream()
+                .filter(e -> "exitoso".equalsIgnoreCase(e.getEstatus()))
+                .collect(Collectors.groupingBy(
+                        ElementRequest::getNombre,
+                        Collectors.summingDouble(ElementRequest::getMonto)));
 
-		// filtrado para solo exitoso
-		double sumaTotal = elementos.stream().filter(e -> "exitoso".equalsIgnoreCase(e.getEstatus()))
-				.mapToDouble(ElementRequest::getMonto).sum();
 
-		return new ResumenMontoResponse(nombrePersona, sumaTotal);
-	}
+        List<ResumenMontoResponse> resultadoFinal = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : agrupadoPorNombre.entrySet()) {
+            resultadoFinal.add(new ResumenMontoResponse(entry.getKey(), entry.getValue()));
+        }
+
+        return resultadoFinal;
+    }
 }

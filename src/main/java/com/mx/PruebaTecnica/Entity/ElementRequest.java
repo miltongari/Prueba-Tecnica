@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ElementRequest {
-	private int id;
+	private String id;
     private String nombre;
     private double monto;
     private String estatus;
